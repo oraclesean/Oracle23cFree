@@ -69,7 +69,7 @@ variable "block_volume_name" {
   default     = "Upgrade Volume"
 }
 variable "block_volume_size" {
-  default     = 100
+  default     = 50
 }
 variable "bv_attachment_name" {
   default     = "/dev/oracleoci/oraclevdb"
