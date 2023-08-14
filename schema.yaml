@@ -25,7 +25,7 @@ variableGroups:
       - ${block_volume_size}
       - ${bv_attachment_display_name}
       - ${bv_attachment_name} 
- - title: "Lab Configuration"
+  - title: "Lab Configuration"
     visible: true
     variables:
       - ${lab_name}
