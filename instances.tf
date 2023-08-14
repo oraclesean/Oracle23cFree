@@ -42,12 +42,12 @@ resource "oci_core_volume_attachment" "createAttachment" {
 
     connection {
       type        = "ssh"
-      host        = data.oci_core_instance.lab_compute.*.public_ip
+      host        = oci_core_instance.lab_compute.*.public_ip
       #host        = data.oci_core_vnic.lab_vnic1.public_ip_address
       agent       = false
       timeout     = "3m"
       user        = "opc"
-      private_key = local.private.key
+      private_key = local.private_key
     }
 
     # register and connect the iSCSI block volume
