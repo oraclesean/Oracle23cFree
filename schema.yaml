@@ -31,7 +31,7 @@ variableGroups:
       - ${lab_name}
       - ${ssh_authorized_keys}
       - instance_shape
-      - ${show_advanced}
+#      - ${show_advanced}
   - title: "Advanced Settings"
     variables:
       - ${container_name}
@@ -75,12 +75,12 @@ variables:
       - "VM.Standard2.4"
       - "VM.Standard2.8"
       - "VM.Standard.E2.1.Micro"
-  show_advanced:
-    title: "Show advanced options?"
-    description: "Shows advanced options for configuring Docker installation, database image builds, and container creation."
-    type: boolean
-    visible: true
-    default: false
+#  show_advanced:
+#    title: "Show advanced options?"
+#    description: "Shows advanced options for configuring Docker installation, database image builds, and container creation."
+#    type: boolean
+#    visible: true
+#    default: false
   container_name:
     title: "Container Name"
     description: "Name for the Docker container"
