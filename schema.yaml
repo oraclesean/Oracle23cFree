@@ -1,0 +1,143 @@
+title: "Run Oracle Database 23c Free on Docker in Oracle Cloud Infrastructure"
+description: "A lab environment for running an Oracle Database 23c Free on Docker using Always Free Oracle Cloud Infrastructure"
+stackDescription: "This is an Oracle Database 23c Free on Docker quickstart automation. It creates all the necessary OCI resources to run an Oracle database in a Docker container on Oracle Cloud Infrastructure using terraform."
+informationalText: "This stack provisions a new compartment, adds necessary VCN and network assets, and creates and provisions a compute instance ready to run an Oracle 23c Free database in a Docker container."
+schemaVersion: 1.1.0
+version: "20190304"
+locale: "en"
+
+source:
+  type: quickstart
+
+variableGroups:
+  - title: "General Configuration"
+    visible: false
+    variables:
+      - ${tenancy_ocid}
+      - ${compartment_ocid}
+      - ${region}
+      - ${user_ocid}
+      - ${fingerprint}
+      - ${private_key_path}
+      - ${private_key_password}
+      - ${private_key}
+  - title: "Lab Configuration"
+    visible: true
+    variables:
+      - ${lab_name}
+      - ${ssh_authorized_keys}
+      - instance_shape
+      - ${show_advanced}
+  - title: "Advanced Settings"
+    variables:
+      - ${container_name}
+      - ${oracle_sid}
+      - ${oracle_pdb}
+#      - ${database_password}
+      - ${docker_tns_port}
+  - title: "Hidden Settings"
+    visible: false
+    variables:
+      - ${authorized_keys}
+      - ${default_user}
+      - ${docker_group}
+      - ${oracle_gid}
+      - ${oracle_group}
+      - ${oracle_uid}
+      - ${oracle_user}
+      - ${oradata_dir}
+
+variables:
+  lab_name:
+    title: "Compartment Name"
+    type: string
+    required: false
+    default: "oracle23c-free"
+    visible: true
+  ssh_authorized_keys:
+    title: "SSH Public Key"
+    description: "The public key to install on the compute for SSH access."
+    type: oci:core:ssh:publickey
+    required: false
+  instance_shape:
+    title: "Instance Shape"
+    description: "Select a shape for the compute instance"
+    type: enum
+    required: false
+    default: "VM.Standard.E2.1.Micro"
+    enum:
+      - "VM.Standard2.1"
+      - "VM.Standard2.2"
+      - "VM.Standard2.4"
+      - "VM.Standard2.8"
+      - "VM.Standard.E2.1.Micro"
+  show_advanced:
+    title: "Show advanced options?"
+    description: "Shows advanced options for configuring Docker installation, database image builds, and container creation."
+    type: boolean
+    visible: true
+    default: false
+  container_name:
+    title: "Container Name"
+    description: "Name for the Docker container"
+    type: string
+    visible: run_container
+    required: false
+    minlength: 3
+    maxlength: 30
+    pattern: "[a-zA-Z0-9][a-zA-Z0-9_.-]"
+    default: "ora23cfree"
+#  database_password:
+#    title: "SYS Password"
+#    description: "Password for the SYS user in the new database. Leave empty to generate a random password."
+#    type: password
+#    visible: run_container
+#    required: false
+#    minLength: 12
+#    maxLength: 30
+#    pattern: ^[A-Za-z][A-Za-z0-9_#\$]+$
+  docker_tns_port:
+    title: "Host Port for TNS"
+    description: "Host port for mapping TNS connections from the container port 1521"
+    type: number
+    visible: run_container
+    required: false
+    minimum: 1024
+    maximum: 49151
+    default: 11521
+
+# Hidden variables
+  authorized_keys:
+    visible: false
+  default_user:
+    visible: false
+  docker_group:
+    visible: false
+  docker_repo_name:
+    visible: false
+  docker_repo_path:
+    visible: false
+  docker_repo_source:
+    visible: false
+  oracle_gid:
+    visible: false
+  oracle_group:
+    visible: false
+  oracle_uid:
+    visible: false
+  oracle_user:
+    visible: false
+  oradata_dir:
+    visible: false
+
+outputs:
+  compute_public_ip:
+    title: "Compute Public IP address"
+    displayText: "Connect to the container: ssh -l opc -i <path-to-key> <ip-address>"
+    type: copyableString
+    visible: true
+
+outputGroups:
+  - title: "Lab Environment Information"
+    outputs:
+      - ${compute_public_ip}

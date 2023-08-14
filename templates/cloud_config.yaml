@@ -1,0 +1,43 @@
+#cloud-config
+output: {all: '| tee -a /var/log/cloud-init-output.log'}
+
+groups:
+  - ${docker_group}
+  - ${oracle_group}
+
+system_info:
+  default_user:
+    groups: [ ${docker_group} ]
+
+users:
+  - default
+  - name: ${oracle_user}
+    groups: [ ${oracle_group}, ${docker_group} ]
+    sudo: ["ALL=(ALL) NOPASSWD:ALL"]
+    lock_passwd: true
+  - name: ${default_user}
+    groups: [ ${oracle_group}, ${docker_group} ]
+
+yum_repos:
+  docker-ce-stable:
+    baseurl: https://download.docker.com/linux/centos/8/$basearch/stable
+    name: Docker CE Stable - $basearch
+    gpgkey: https://download.docker.com/linux/centos/gpg
+    gpgcheck: 0
+    enabled: 1
+
+write_files:
+runcmd:
+  - yum-config-manager --save --setopt=ol8_oci_included.skip_if_unavailable=true
+  - yum-config-manager --disable ol8_ksplice ol8_MySQL80*
+  - yum-config-manager --enable ol8_developer ol8_developer_epel
+  - yum clean all && yum update -y
+  - yum install -y docker-ce docker-ce-cli
+  - groupmod -g ${oracle_gid} ${oracle_group}
+  - usermod -u ${oracle_uid} ${oracle_user}
+  - mkdir ${oradata_dir} && chown ${oracle_user}:${oracle_group} ${oradata_dir} && chmod g+w ${oradata_dir}
+  - systemctl enable docker && systemctl start docker
+  - runuser -l ${default_user} -c "sed -ie '/^PATH=/ s|$|:/bin|' ~/.bash_profile"
+  - runuser -l ${default_user} -c "docker run --name ${container_name} -p ${docker_tns_port}:1521 -v ${oradata_dir}/${container_name}:/opt/oracle/oradata container-registry.oracle.com/database/free"
+  - runuser -l ${default_user} -c "docker images"
+final_message: "Installation complete at $UPTIME seconds"
