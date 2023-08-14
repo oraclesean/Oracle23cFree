@@ -65,3 +65,15 @@ variable "oracle_user" {
 variable "oradata_dir" {
   default = "/oradata"
 }
+variable "block_volume_name" {
+  default     = "Upgrade Volume"
+}
+variable "block_volume_size" {
+  default     = 100
+}
+variable "bv_attachment_name" {
+  default     = "/dev/oracleoci/oraclevdb"
+}
+variable "bv_attachment_display_name" {
+  default     = "lab-bv-attachment"
+}

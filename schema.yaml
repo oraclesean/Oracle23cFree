@@ -21,7 +21,11 @@ variableGroups:
       - ${private_key_path}
       - ${private_key_password}
       - ${private_key}
-  - title: "Lab Configuration"
+      - ${block_volume_name}
+      - ${block_volume_size}
+      - ${bv_attachment_display_name}
+      - ${bv_attachment_name} 
+ - title: "Lab Configuration"
     visible: true
     variables:
       - ${lab_name}
